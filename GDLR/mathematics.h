@@ -7,6 +7,9 @@
 #ifndef RENESAS_GDLR_MATHEMATICS_H_
 #define RENESAS_GDLR_MATHEMATICS_H_
 
+#include <stdlib.h>
+#include <string.h>
+
 /**
  * @brief Exception handling function
  */
@@ -24,6 +27,7 @@ struct vector
 /**
  * @brief Enumeration of photovoltaic parameters
  */
+/*
 enum PARAM
 {
     cnt = 8,                          ///< How many params are there
@@ -35,7 +39,8 @@ enum PARAM
     Radiation_Global_Tilted = 5,      ///< theta_5
     Radiation_Diffuse_Tilted = 6,     ///< theta_6
     Weather_Daily_Rainfall = 7        ///< theta_7
-} param;
+} para;
+*/
 
 /**
  * @brief Vector Addition

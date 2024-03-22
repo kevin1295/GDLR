@@ -29,8 +29,8 @@ int main() {
     struct vector theta_o;
     theta_o.dim = 3;
     theta_o.val[0] = 1;
-    theta_o.val[1] = 2;
-    theta_o.val[2] = 3;
+    theta_o.val[1] = 0;
+    theta_o.val[2] = 0;
 
     double epsilon_o = 0.0;
 
@@ -40,9 +40,10 @@ int main() {
     double epsilon;
 
     LinearRegression(x, y, &theta_o, &epsilon_o, 1, 100, 3, &iter, &loss, &theta, &epsilon);
-    printf("iter : %d \n loss : %llf \n");
+    printf("iter : %d \nloss : %llf \ntheta:");
     for (int i = 0; i < 3; i++) {
-
+        printf("  %llf\n", theta.val[i]);
     }
+    printf("epsilon: %llf", epsilon);
     return 0;
 }

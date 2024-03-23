@@ -12,6 +12,7 @@ void VectorAdd(struct vector a, struct vector b, struct vector *ret)
     }
     else
     {
+        free(ret->val);
         ret->val = (double *)malloc(a.dim * sizeof(double));
         for (int i = 0; i < a.dim; i++)
         {
@@ -28,6 +29,7 @@ void VectorMinus(struct vector a, struct vector b, struct vector *ret)
     }
     else
     {
+        free(ret->val);
         ret->val = (double *)malloc(a.dim * sizeof(double));
         for (int i = 0; i < a.dim; i++)
         {
@@ -86,7 +88,7 @@ double Predict(struct vector *x, struct vector *theta, double *epsilon)
 
 void StepGradientDescent(struct vector *x, double *y, int *train_size, struct vector *current_theta, double *current_epsilon, double learning_rate, struct vector *ret_theta, double *ret_epsilon)
 {
-    double gradients[x->dim], aver_error = 0;
+    double gradients[x->dim], gradient_epsilon = 0.0, aver_error = 0;
     for (int i = 0; i < x->dim; i++)
     {
         gradients[i] = 0.0;
@@ -97,22 +99,25 @@ void StepGradientDescent(struct vector *x, double *y, int *train_size, struct ve
     {
         double error = 0.0, product = 0.0;
         VectorDotProduct(x[j], *current_theta, &product);
-        error = y[j] - product - *current_epsilon;
+        error = y[j] - product - *
+        current_epsilon;
         aver_error += error;
 
+        gradient_epsilon += error;
         for (int i = 0; i < x->dim; i++)
         {
             gradients[i] += error * x[j].val[i];
         }
     }
     
+    gradient_epsilon = gradient_epsilon / cnt;
+    *ret_epsilon = *current_epsilon + learning_rate * gradient_epsilon;
+    ret_theta->dim = x->dim;
     for (int i = 0; i < x->dim; i++)
     {
         gradients[i] = gradients[i] / cnt;
         ret_theta->val[i] = current_theta->val[i] + learning_rate * gradients[i] * (1.0);
     }
-
-    *ret_epsilon = aver_error / cnt;
 }
 
 void LinearRegression(struct vector *x, double *y, int train_size, struct vector *decent_origin_theta, double *decent_origin_epsilon, double learning_rate, double iter_limit, int triger, int patience, int *ret_iteration, double *ret_loss, struct vector *ret_theta, double *ret_epsilon)
@@ -147,7 +152,7 @@ void LinearRegression(struct vector *x, double *y, int train_size, struct vector
         epsilon = epsilon_temp;
         double validation_loss = MeanSquaredError(x, y, &train_size, &theta, &epsilon);
 
-        if (validation_loss < best_validation_loss)
+        if (validation_loss - best_validation_loss < -1e-6)
         {
             best_validation_loss = validation_loss;
             best_iteration = iter;
@@ -161,7 +166,7 @@ void LinearRegression(struct vector *x, double *y, int train_size, struct vector
 
             if (patience_counter > triger)
             {
-                learning_rate = learning_rate * 0.8;
+                learning_rate = learning_rate * 0.7;
             }
 
             if (patience_counter > patience)

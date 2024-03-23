@@ -13,7 +13,6 @@
 #include <stdio.h>
 */
 
-
 /**
  * @brief Exception handling function, waiting for user to define
  */
@@ -27,24 +26,6 @@ struct vector
     int dim;     ///< Dimension
     double *val; ///< Values
 };
-
-/**
- * @brief Enumeration of photovoltaic parameters
- */
-/*
-enum PARAM
-{
-    cnt = 8,                          ///< How many params are there
-    cnst = 0,                         ///< The const is named theta_0
-    Weather_Temperature_Celsius = 1,  ///< theta_1
-    Weather_Relative_Humidity = 2,    ///< theta_2
-    Global_Horizontal_Radiation = 3,  ///< theta_3
-    Diffuse_Horizontal_Radiation = 4, ///< theta_4
-    Radiation_Global_Tilted = 5,      ///< theta_5
-    Radiation_Diffuse_Tilted = 6,     ///< theta_6
-    Weather_Daily_Rainfall = 7        ///< theta_7
-} para;
-*/
 
 /**
  * @brief Vector Addition
@@ -77,7 +58,9 @@ void VectorDotProduct(struct vector a, struct vector b, double *ret);
  * @brief MeanSquaredError calculation function
  * @param x An array for storing independent variable statistics data
  * @param y An array for storing dependent variables statistics data
+ * @param train_size Training data size
  * @param theta Pointer to the linear regression coefficient
+ * @param epsilon Pointer to the linear regression deviation
  * @return Double precision K-squared error
  */
 double MeanSquaredError(struct vector *x, double *y, int *train_size, struct vector *theta, double *epsilon);
@@ -85,23 +68,23 @@ double MeanSquaredError(struct vector *x, double *y, int *train_size, struct vec
 /**
  * @brief Using specific multiple linear regression models to predict results
  * @param x An array for storing independent variable statistics data
- * @param y An array for storing dependent variables statistics data
  * @param theta Multiple linear regression model parameters
  * @param epsilon Linear regression deviation
  * @return Predict result
-*/
+ */
 double Predict(struct vector *x, struct vector *theta, double *epsilon);
 
 /**
  * @brief Single step gradient descent
  * @param x An array for storing independent variable statistics data
  * @param y An array for storing dependent variables statistics data
+ * @param train_size Training data size
  * @param current_theta The coefficient of the initial point of single step gradient descent
  * @param current_epsilon The deviation of the initial point of a single step gradient descent
  * @param learning_rate Gradient descent learning step size
  * @param ret_theta Pointer to the coefficient return value
  * @param ret_epsilon Pointer to the return value of the deviation amount
-*/
+ */
 void StepGradientDescent(struct vector *x, double *y, int *train_size, struct vector *current_theta, double *current_epsilon, double learning_rate, struct vector *ret_theta, double *ret_epsilon);
 
 /**
@@ -124,9 +107,9 @@ void StepGradientDescent(struct vector *x, double *y, int *train_size, struct ve
  * @exception The number of elements in the x and y arrays is different
  * @attention Please remember to free the *ret_theta
  */
-void LinearRegression(struct vector *x, double *y, int train_size, 
-    struct vector *decent_origin_theta, double *decent_origin_epsilon, 
-    double learning_rate, double sensitivity, double iter_limit, int triger, int patience, double target_accuracy,
-    int *ret_iteration, double *ret_loss, struct vector *ret_theta, double *ret_epsilon);
+void LinearRegression(struct vector *x, double *y, int train_size,
+                      struct vector *decent_origin_theta, double *decent_origin_epsilon,
+                      double learning_rate, double sensitivity, double iter_limit, int triger, int patience, double target_accuracy,
+                      int *ret_iteration, double *ret_loss, struct vector *ret_theta, double *ret_epsilon);
 
 #endif

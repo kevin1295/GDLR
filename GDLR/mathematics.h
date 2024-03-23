@@ -7,6 +7,7 @@
 #ifndef RENESAS_GDLR_MATHEMATICS_H_
 #define RENESAS_GDLR_MATHEMATICS_H_
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -76,7 +77,7 @@ void VectorDotProduct(struct vector a, struct vector b, double *ret);
  * @param theta Pointer to the linear regression coefficient
  * @return Double precision K-squared error
  */
-double MeanSquaredError(struct vector *x, double *y, struct vector *theta, double *epsilon);
+double MeanSquaredError(struct vector *x, double *y, int *train_size, struct vector *theta, double *epsilon);
 
 /**
  * @brief Using specific multiple linear regression models to predict results
@@ -98,7 +99,7 @@ double Predict(struct vector *x, struct vector *theta, double *epsilon);
  * @param ret_theta Pointer to the coefficient return value
  * @param ret_epsilon Pointer to the return value of the deviation amount
 */
-void StepGradientDescent(struct vector *x, double *y, struct vector *current_theta, double *current_epsilon, double learning_rate, struct vector *ret_theta, double *ret_epsilon);
+void StepGradientDescent(struct vector *x, double *y, int *train_size, struct vector *current_theta, double *current_epsilon, double learning_rate, struct vector *ret_theta, double *ret_epsilon);
 
 /**
  * @brief Implementing Multiple Linear Regression with Gradient Descent Algorithm
@@ -108,6 +109,7 @@ void StepGradientDescent(struct vector *x, double *y, struct vector *current_the
  * @param decent_origin_epsilon Initial deviation of gradient descent
  * @param learning_rate Learning step size
  * @param iter_limit Maximum number of iterations
+ * @param triger Reminder of decreased learning rate
  * @param patience Optimize patience and describe the stopping goal of the early stop algorithm
  * @param ret_iteration Final iteration count
  * @param ret_loss Final Mean Squared Error
@@ -115,6 +117,6 @@ void StepGradientDescent(struct vector *x, double *y, struct vector *current_the
  * @param ret_epsilon Pointer to the storage location of the return value of the fitting deviation
  * @exception The number of elements in the x and y arrays is different
  */
-void LinearRegression(struct vector *x, double *y, struct vector *decent_origin_theta, double *decent_origin_epsilon, double learning_rate, double iter_limit, int patience, int *ret_iteration, double *ret_loss, struct vector *ret_theta, double *ret_epsilon);
+void LinearRegression(struct vector *x, double *y, int train_size, struct vector *decent_origin_theta, double *decent_origin_epsilon, double learning_rate, double iter_limit, int triger, int patience, int *ret_iteration, double *ret_loss, struct vector *ret_theta, double *ret_epsilon);
 
 #endif

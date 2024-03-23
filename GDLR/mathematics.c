@@ -140,13 +140,13 @@ void LinearRegression(struct vector *x, double *y, int train_size,
 
     for (iter = 0; iter < iter_limit; ++iter)
     {
-        
+        /*
         printf("epoch %d:----------\n    epsilon = %lf\n    theta =\n", iter, epsilon);
         for (int i = 0; i < theta.dim; i++) {
             printf("        theta_%d = %lf\n", i, theta.val[i]);
         }
         printf("    loss = %lf\n", MeanSquaredError(x, y, &train_size, &theta, &epsilon));
-        
+        */
 
         StepGradientDescent(x, y, &train_size, &theta, &epsilon, alpha, &theta_temp, &epsilon_temp);
         theta = theta_temp;

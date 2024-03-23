@@ -9,8 +9,9 @@
 #define RENESAS_GDLR_MATHEMATICS_H_
 
 #include <stdlib.h>
-
+/*
 #include <stdio.h>
+*/
 
 
 /**

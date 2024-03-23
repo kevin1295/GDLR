@@ -7,9 +7,10 @@
 #ifndef RENESAS_GDLR_MATHEMATICS_H_
 #define RENESAS_GDLR_MATHEMATICS_H_
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+/*
+#include <stdio.h>
+*/
 
 /**
  * @brief Exception handling function

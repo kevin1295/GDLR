@@ -1,19 +1,13 @@
 #include "mathematics.h"
 
-void excep()
-{
-}
-
 void VectorAdd(struct vector a, struct vector b, struct vector *ret)
 {
     if (a.dim != b.dim)
     {
-        excep();
+        ExceptionHandler();
     }
     else
     {
-        free(ret->val);
-        ret->val = (double *)malloc(a.dim * sizeof(double));
         for (int i = 0; i < a.dim; i++)
         {
             *(ret->val + i) = *(a.val + i) + *(b.val + i);
@@ -25,12 +19,10 @@ void VectorMinus(struct vector a, struct vector b, struct vector *ret)
 {
     if (a.dim != b.dim)
     {
-        excep();
+        ExceptionHandler();
     }
     else
     {
-        free(ret->val);
-        ret->val = (double *)malloc(a.dim * sizeof(double));
         for (int i = 0; i < a.dim; i++)
         {
             *(ret->val + i) = *(a.val + i) - *(b.val + i);
@@ -42,7 +34,7 @@ void VectorDotProduct(struct vector a, struct vector b, double *ret)
 {
     if (a.dim != b.dim)
     {
-        excep();
+        ExceptionHandler();
     }
     else
     {
@@ -57,7 +49,7 @@ void VectorDotProduct(struct vector a, struct vector b, double *ret)
 double MeanSquaredError(struct vector *x, double *y, int *train_size, struct vector *theta, double *epsilon) {
     if (theta->dim != x->dim)
     {
-        excep();
+        ExceptionHandler();
     }
     double product = 0;
     double loss = 0;
@@ -75,7 +67,7 @@ double Predict(struct vector *x, struct vector *theta, double *epsilon)
 {
     if (x->dim != theta->dim)
     {
-        excep();
+        ExceptionHandler();
     }
     else
     {
@@ -116,44 +108,52 @@ void StepGradientDescent(struct vector *x, double *y, int *train_size, struct ve
     for (int i = 0; i < x->dim; i++)
     {
         gradients[i] = gradients[i] / cnt;
-        ret_theta->val[i] = current_theta->val[i] + learning_rate * gradients[i] * (1.0);
+        ret_theta->val[i] = current_theta->val[i] + learning_rate * gradients[i];
     }
 }
 
-void LinearRegression(struct vector *x, double *y, int train_size, struct vector *decent_origin_theta, double *decent_origin_epsilon, double learning_rate, double iter_limit, int triger, int patience, int *ret_iteration, double *ret_loss, struct vector *ret_theta, double *ret_epsilon)
+void LinearRegression(struct vector *x, double *y, int train_size, 
+    struct vector *decent_origin_theta, double *decent_origin_epsilon, 
+    double learning_rate, double sensitivity, double iter_limit, int triger, int patience, double target_accuracy,
+    int *ret_iteration, double *ret_loss, struct vector *ret_theta, double *ret_epsilon)
 {
-    if (sizeof(x)/sizeof(x[0]) != sizeof(y)/sizeof(double))
+    if (x->dim != decent_origin_theta->dim)
     {
-        excep();
+        ExceptionHandler();
     }
 
     double best_validation_loss = __INT32_MAX__, best_epsilon = 0;
     int best_iteration;
-    struct vector best_theta;
+    struct vector best_theta = *decent_origin_theta;
     double alpha = learning_rate;
     int patience_counter = 0, iter;
 
     struct vector theta = *decent_origin_theta, theta_temp;
     theta_temp.dim = theta.dim;
-    theta_temp.val = (double*)malloc(theta.dim * sizeof(double));
+    theta_temp.val = (double*)malloc(theta.dim * sizeof(double));   // 内存管理问题待解决
     double epsilon = *decent_origin_epsilon, epsilon_temp;
+
+    if (theta_temp.val == NULL)
+    {
+        ExceptionHandler();
+    }
 
     for (iter = 0; iter < iter_limit; ++iter)
     {
-        /*
+        
         printf("epoch %d:----------\n    epsilon = %lf\n    theta =\n", iter, epsilon);
         for (int i = 0; i < theta.dim; i++) {
             printf("        theta_%d = %lf\n", i, theta.val[i]);
         }
         printf("    loss = %lf\n", MeanSquaredError(x, y, &train_size, &theta, &epsilon));
-        */
+        
 
         StepGradientDescent(x, y, &train_size, &theta, &epsilon, alpha, &theta_temp, &epsilon_temp);
         theta = theta_temp;
         epsilon = epsilon_temp;
         double validation_loss = MeanSquaredError(x, y, &train_size, &theta, &epsilon);
 
-        if (validation_loss - best_validation_loss < -1e-6)
+        if (best_validation_loss - validation_loss > target_accuracy)
         {
             best_validation_loss = validation_loss;
             best_iteration = iter;
@@ -167,7 +167,7 @@ void LinearRegression(struct vector *x, double *y, int train_size, struct vector
 
             if (patience_counter > triger)
             {
-                learning_rate = learning_rate * 0.7;
+                learning_rate = learning_rate * sensitivity;
             }
 
             if (patience_counter > patience)

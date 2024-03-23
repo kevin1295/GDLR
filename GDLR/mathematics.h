@@ -2,20 +2,21 @@
  * @file mathematics.h
  * @author Goldfish1295
  * @brief Solving Multiple Linear Regression with Gradient Descent.
+ * @attention Using this header, you must define you own ExceptionHandler() function
  * @version v1.0
  */
 #ifndef RENESAS_GDLR_MATHEMATICS_H_
 #define RENESAS_GDLR_MATHEMATICS_H_
 
 #include <stdlib.h>
-/*
+
 #include <stdio.h>
-*/
+
 
 /**
- * @brief Exception handling function
+ * @brief Exception handling function, waiting for user to define
  */
-void excep();
+void ExceptionHandler();
 
 /**
  * @brief Vector structure
@@ -106,18 +107,25 @@ void StepGradientDescent(struct vector *x, double *y, int *train_size, struct ve
  * @brief Implementing Multiple Linear Regression with Gradient Descent Algorithm
  * @param x An array for storing independent variable statistics data
  * @param y An array for storing dependent variables statistics data
+ * @param train_size The size of train data
  * @param decent_origin_theta Initial coefficient of gradient descent
  * @param decent_origin_epsilon Initial deviation of gradient descent
  * @param learning_rate Learning step size
+ * @param sensitivity The rate of decline in learning rate, recommended to be around 0.8
  * @param iter_limit Maximum number of iterations
  * @param triger Reminder of decreased learning rate
  * @param patience Optimize patience and describe the stopping goal of the early stop algorithm
+ * @param target_accuracy The accuracy of mean square error, recommended to be lower than 1e-5
  * @param ret_iteration Final iteration count
  * @param ret_loss Final Mean Squared Error
  * @param ret_theta Pointer to the storage location of the return value of the fitting coefficient
  * @param ret_epsilon Pointer to the storage location of the return value of the fitting deviation
  * @exception The number of elements in the x and y arrays is different
+ * @attention Please remember to free the *ret_theta
  */
-void LinearRegression(struct vector *x, double *y, int train_size, struct vector *decent_origin_theta, double *decent_origin_epsilon, double learning_rate, double iter_limit, int triger, int patience, int *ret_iteration, double *ret_loss, struct vector *ret_theta, double *ret_epsilon);
+void LinearRegression(struct vector *x, double *y, int train_size, 
+    struct vector *decent_origin_theta, double *decent_origin_epsilon, 
+    double learning_rate, double sensitivity, double iter_limit, int triger, int patience, double target_accuracy,
+    int *ret_iteration, double *ret_loss, struct vector *ret_theta, double *ret_epsilon);
 
 #endif

@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "GDLR\mathematics.h"
+#include "GDLR/mathematics.h"
+
+void ExceptionHandler()
+{
+    printf("exception!!!\n");
+    system("pause");
+}
 
 int main() {
     struct vector x[4];
@@ -42,12 +48,19 @@ int main() {
 
     printf("---debug---\n");
 
-    LinearRegression(x, y, 4, &theta_o, &epsilon_o, 0.02, 10000, 10, 100, &iter, &loss, &theta, &epsilon);
+    LinearRegression(x, y, 4, &theta_o, &epsilon_o, 0.02, 0.8, 10000, 10, 100, 1e-6, &iter, &loss, &theta, &epsilon);
 
     printf("---result---\n");
-    printf("iter : %d\nloss : %lf\nepsilon : %lf\n theta :\n", iter, epsilon, loss);
+    printf("iter : %d\nloss : %lf\nepsilon : %lf\n theta :\n", iter, loss, epsilon);
     for (int i = 0; i < 3; i++) {
         printf("    theta_%d = %lf\n", i, theta.val[i]);
     }
+
+    free(theta.val);
+    free(theta_o.val);
+    for (int i = 0; i < 4; i++) {
+        free(x[i].val);
+    }
+
     return 0;
 }
